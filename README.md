@@ -3,7 +3,7 @@
 ## Overview
 Chat Messenger with File Sharing **for educational purposes** is a multi-user, multi-room chat application developed in Python using socket programming and SQLite. This application enables real-time communication, allowing users to create and join chat rooms, exchange messages, and share files.
 
-The project features server-client architecture with user authentication, admin controls, persistent chat history, and file storage capabilities. It serves as an educational tool, showcasing key programming concepts such as networking, multithreading, database management, and file handling.
+The project features server-client architecture with user authentication, admin controls, persistent chat history, and file storage capabilities. It serves as an **educational tool**, showcasing key programming concepts such as networking, multithreading, database management, and file handling.
 
 ---
 
