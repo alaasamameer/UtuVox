@@ -8,8 +8,7 @@ from .history_manager import log_event, get_room_history, delete_room_history, l
 from .auth import change_password, add_user, edit_user, view_users, ban_user, unban_user, set_admin_key
 from .file_manager import get_room_files, save_file, get_file_info, serve_file
 
-rooms_lock = threading.Lock()
-usernames_lock = threading.Lock()
+from config import usernames_lock, rooms_lock
 
 def get_timestamp() -> str:
     """Return the current timestamp formatted as 'YYYY-MM-DD HH:MM:SS'."""

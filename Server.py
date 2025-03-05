@@ -4,6 +4,7 @@ import threading
 import signal
 import sys
 
+from config import usernames_lock, rooms_lock
 from handlers.auth import init_db, register_user, login_user, get_admin_key
 from handlers.command_handler import process_command
 from handlers.file_manager import init_file_db
@@ -13,8 +14,6 @@ from handlers.room_manager import init_room_db
 rooms = {}
 clients = {}
 usernames = {}
-rooms_lock = threading.Lock()
-usernames_lock = threading.Lock()
 
 # Global flag for shutdown
 shutdown_flag = False
