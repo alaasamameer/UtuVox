@@ -32,7 +32,7 @@ def connect_to_server(host, port):
             print(
                 f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] [ERROR] Connection failed: {e}. Retrying in 2 seconds...")
             time.sleep(2)
-    return None  # Return None if shutdown is triggered
+    return None
 
 
 def receive_messages(client_socket, host, port, state):
@@ -45,29 +45,32 @@ def receive_messages(client_socket, host, port, state):
                 raise ConnectionResetError("Server closed the connection")
             print(f"[RECV] {message}")
 
-            # Update room status based on server messages
-            if "You joined room '" in message:
-                # Extract room name between single quotes
+            # Update state based on server response
+            if "Login successful" in message and "/login" not in message:
+                # Extract username from the last sent /login command if needed, or rely on client state
+                if state.password:  # Ensure a login attempt was made
+                    print(f"Debug: Login successful, username set to {state.username}")
+            elif "Invalid username or password" in message:
+                state.username = None  # Reset username on failed login
+                state.password = None
+                print("Debug: Login failed, username reset to None")
+            elif "You joined room '" in message:
                 start = message.find("You joined room '") + len("You joined room '")
                 end = message.find("'", start)
                 room_name = message[start:end] if start != -1 and end != -1 else None
                 if room_name:
-                    print(f"Debug: Updating current_room to {room_name}")  # Debug print
+                    print(f"Debug: Updating current_room to {room_name}")
                     state.current_room = room_name
             elif "Room '" in message and "' created successfully" in message:
-                # Optionally auto-join after creation
                 start = message.find("Room '") + len("Room '")
                 end = message.find("'", start)
                 room_name = message[start:end] if start != -1 and end != -1 else None
                 if room_name:
-                    print(f"Debug: Auto-joining room {room_name} after creation")  # Debug print
+                    print(f"Debug: Auto-joining room {room_name} after creation")
                     state.current_room = room_name
             elif "You left room" in message or "has been deleted by an admin" in message:
-                print(f"Debug: Setting current_room to None (left or deleted)")  # Debug print
-                state.current_room = None  # User is no longer in a room
-            elif "User " in message and "joined room '" in message:
-                # Handle notifications of other users joining (optional, for logging)
-                pass  # No need to update state.current_room for others joining
+                print(f"Debug: Setting current_room to None (left or deleted)")
+                state.current_room = None
             elif message.startswith("/file "):
                 parts = message.split(" ", 3)
                 if len(parts) >= 3:
@@ -128,20 +131,17 @@ def signal_handler(sig, frame):
 
 def main():
     global shutdown_flag
-    host = '127.0.0.1'  # Update to server IP if on different node
+    host = '127.0.0.1'
     port = 9090
 
-    # Register signal handlers
-    signal.signal(signal.SIGINT, signal_handler)  # Ctrl+C
-    signal.signal(signal.SIGTERM, signal_handler)  # Termination signal (e.g., kill command on Unix)
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
 
-    # Shared state for credentials and room
     state = ClientState()
     client_socket = connect_to_server(host, port)
-    if not client_socket:  # Exit if initial connection fails due to shutdown
+    if not client_socket:
         return
 
-    # Start receive thread with shared state
     receive_thread = threading.Thread(target=receive_messages, args=(client_socket, host, port, state), daemon=True)
     receive_thread.start()
 
@@ -149,11 +149,9 @@ def main():
 
     try:
         while not shutdown_flag:
-            # Wait briefly for any pending state updates from receive_messages
-            time.sleep(0.1)  # Small delay to allow state updates to propagate
-            # Dynamic prompt showing username and current room status
+            time.sleep(0.1)
             prompt = f"({state.username if state.username else 'unknown'}@{state.current_room if state.current_room else 'outside'})> "
-            sys.stdout.flush()  # Ensure prompt updates immediately
+            sys.stdout.flush()
             command = input(prompt)
             current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -170,29 +168,24 @@ def main():
                     client_socket.send(command.encode("utf-8"))
                     print(f"[{current_time}] [SENT] {command}")
 
-                    # Update room status for local commands
                     if command.startswith("/join "):
-                        # Room updates will be handled by server response in receive_messages
                         pass
                     elif command.startswith("/leave"):
-                        state.current_room = None  # Immediately update locally
+                        state.current_room = None
                     elif command.startswith("/quit"):
                         print(f"[{current_time}] [INFO] Disconnecting...")
                         shutdown_flag = True
                         client_socket.close()
                         break
-
-                    # Update credentials after login or registration
                     elif command.startswith("/login "):
                         parts = command.split(" ", 3)
                         if len(parts) == 3:
+                            # Set username and password tentatively, will be reset if login fails
                             state.username, state.password = parts[1], parts[2]
                     elif command.startswith("/register "):
                         parts = command.split(" ", 4)
                         if len(parts) >= 3:
-                            state.username, state.password = parts[1], parts[2]  # Set username after registration
-
-                    # Handle file upload
+                            state.username, state.password = parts[1], parts[2]
                     elif command.startswith("/upload "):
                         parts = command.split(" ", 3)
                         if len(parts) < 3:
@@ -210,7 +203,7 @@ def main():
     finally:
         print(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] [INFO] Cleaning up...")
         client_socket.close()
-        sys.exit(0)  # Ensure clean exit
+        sys.exit(0)
 
 
 if __name__ == "__main__":
