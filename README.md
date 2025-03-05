@@ -32,6 +32,18 @@ The core functionality—authentication, messaging, file sharing, and admin mana
 
 ---
 
+## How to Access the Full Code
+Users around the world can access the full source code of UtuVox by visiting the project repository on GitHub. Follow these steps:
+
+1. Navigate to the GitHub repository: [https://github.com/alaasamameer/UtuVox](https://github.com/alaasamameer/UtuVox)
+2. Click the "Code" button (green button on the repository page).
+3. Choose one of the following options:
+   - **Clone the repository** using Git: `git clone https://github.com/alaasamameer/UtuVox.git`
+   - **Download as ZIP**: Click "Download ZIP" to get a compressed archive of the code.
+4. Unzip the files (if downloaded as ZIP) and explore or run the code locally.
+
+---
+
 ## Requirements
 - Python 3.6 or later (recommended: 3.9+ for full type hint support)
 - No external libraries required (built using Python’s standard library):
@@ -108,36 +120,38 @@ Note: The admin key is stored in `admin_key.txt` and can be changed with `/chang
 - Connects to the server via a command-line interface with a dynamic prompt (`(username@room)>` or `(username@outside)>`).
 
 ### Basic Commands:
-| Command | Description |
-|---------|-------------|
-| `/register <username> <password> [admin_key]` | Register a new user (admin key required for admin status). |
-| `/login <username> <password>` | Log in with existing credentials. |
-| `/changepassword <old_password> <new_password>` | Change your password. |
-| `/help` | Show the list of available commands. |
-| `/create <room>` | Create a new chat room and auto-join it. |
-| `/join <room>` | Join an existing chat room and view its history. |
-| `/leave` | Leave the current room. |
-| `/message <text>` | Send a message to the current room. |
-| `/upload <room> <filepath>` | Upload a file to the specified room (stored with a unique name). |
-| `/download <filename>` | Download a file by its unique name to the `downloads/` directory. |
-| `/list_all_users` | List all online users. |
-| `/list_users_in_room` | List users currently in the joined room (duplicate-free). |
-| `/list_all_rooms` | List all available chat rooms. |
-| `/quit` | Disconnect from the server and exit the chat. |
-| `/whoami` | Check the currently logged-in username. |
-| `/whereami` | Check the current room or status (outside). |
+
+| Command                 | Description                                                                 |
+|-------------------------|-----------------------------------------------------------------------------|
+| `/register <username> <password> [admin_key]` | Register a new user (admin key required for admin status).                  |
+| `/login <username> <password>` | Log in with existing credentials.                                           |
+| `/changepassword <old_password> <new_password>` | Change your password.                                                       |
+| `/help`                 | Show the list of available commands.                                        |
+| `/create <room>`        | Create a new chat room and auto-join it.                                    |
+| `/join <room>`          | Join an existing chat room and view its history.                            |
+| `/leave`                | Leave the current room.                                                     |
+| `/message <text>`       | Send a message to the current room.                                         |
+| `/upload <room> <filepath>` | Upload a file to the specified room (stored with a unique name).            |
+| `/download <filename>`  | Download a file by its unique name to the `downloads/` directory.           |
+| `/list_all_users`       | List all online users.                                                      |
+| `/list_users_in_room`   | List users currently in the joined room (duplicate-free).                   |
+| `/list_all_rooms`       | List all available chat rooms.                                              |
+| `/quit`                 | Disconnect from the server and exit the chat.                               |
+| `/whoami`               | Check the currently logged-in username.                                     |
+| `/whereami`             | Check the current room or status (outside).                                 |
 
 ### Admin Commands (in addition to basic commands):
-| Command | Description |
-|---------|-------------|
-| `/delete_room <room>` | Delete a room and its history, even with active users. |
-| `/add_user <username> <password> [is_admin]` | Add a new user (`is_admin`: 0 or 1, default 0). |
-| `/edit_user <username> <new_password> [is_admin]` | Edit a user’s password and/or admin status. |
-| `/view_users` | List all registered users with their admin and ban status. |
+
+| Command                 | Description                                                                 |
+|-------------------------|-----------------------------------------------------------------------------|
+| `/delete_room <room>`   | Delete a room and its history, even with active users.                      |
+| `/add_user <username> <password> [is_admin]` | Add a new user (`is_admin`: 0 or 1, default 0).                             |
+| `/edit_user <username> <new_password> [is_admin]` | Edit a user’s password and/or admin status.                                 |
+| `/view_users`           | List all registered users with their admin and ban status.                  |
 | `/view_room_history <room>` | View a room’s chat history, including messages, joins, leaves, and file operations. |
-| `/ban_user <username>` | Ban a user from the server, disconnecting them immediately. |
-| `/unban_user <username>` | Unban a previously banned user. |
-| `/change_admin_key <new_key>` | Update the admin registration key in `admin_key.txt`. |
+| `/ban_user <username>`  | Ban a user from the server, disconnecting them immediately.                 |
+| `/unban_user <username>` | Unban a previously banned user.                                            |
+| `/change_admin_key <new_key>` | Update the admin registration key in `admin_key.txt`.                      |
 
 ---
 
@@ -213,7 +227,7 @@ UtuVox/
 ---
 
 ## License
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the MIT License. See the [https://github.com/alaasamameer/UtuVox/blob/main/LICENSE.md] (`LICENSE`) file for details.
 
 ---
 
